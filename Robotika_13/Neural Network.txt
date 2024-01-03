@@ -1,0 +1,34 @@
+from keras.models import Sequential
+from keras.layers import Conv2D
+from keras.layers import MaxPooling2D
+from keras.layers import Flatten
+from keras.layers import Dense
+#import save model
+import tensorflow as tf
+from keras.models import load_model
+model = Sequential()
+model.add(Conv2D(32, (3, 3), input_shape = (224, 224, 3), activation = 'relu'))
+model.add(MaxPooling2D(pool_size = (2, 2)))
+model.add(Conv2D(32, (3, 3), activation = 'relu'))
+model.add(MaxPooling2D(pool_size = (2, 2)))
+model.add(Flatten())
+model.add(Dense(units = 128, activation = 'relu'))
+model.add(Dense(units = 36, activation = 'softmax'))
+model.summary()
+model.compile(optimizer = 'contoh', loss = 'categorical_crossentropy', metrics = ['accuracy'])
+from keras.preprocessing.image import ImageDataGenerator
+train_datagen = ImageDataGenerator(rescale = 1./255,
+ shear_range = 0.2,
+ zoom_range = 0.2,
+ horizontal_flip = True)
+test_datagen = ImageDataGenerator(rescale = 1./255,
+ shear_range = 0.2,
+ zoom_range = 0.2,
+horizontal_flip = True)
+training_set = train_datagen.flow_from_directory('Datasets/Train', target_size = (224, 224),
+ batch_size = 10, class_mode = 'categorical')
+test_set = test_datagen.flow_from_directory('Datasets/Test', target_size = (224, 224),
+ batch_size = 10, class_mode = 'categorical')
+model.fit_generator(training_set, steps_per_epoch =350, epochs = 5,
+ validation_data = test_set, validation_steps =200)
+model.save('./Model/coba17d.h5 
